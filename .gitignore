@@ -1,0 +1,6 @@
+node_modules/
+dist/**
+public/styles/main.css
+
+.env*
+!.env.example
