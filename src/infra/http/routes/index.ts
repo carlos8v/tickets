@@ -1,7 +1,9 @@
 import type { Express } from 'express'
 
-import { loginRouter } from './login.routes'
+import { authRouter } from './auth.routes'
 
 export function initializeRoutes(app: Express) {
-  app.use(loginRouter)
+  app.get('/', (_, res) => res.render('index'))
+
+  app.use(authRouter)
 }

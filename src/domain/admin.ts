@@ -1,7 +1,7 @@
 import { randomUUID } from 'crypto'
 import type { OptionalProps } from './utils/optional-props'
 
-type AdminModel = {
+export type AdminModel = {
   id: string
   userId: string
   createdAt: Date | string
