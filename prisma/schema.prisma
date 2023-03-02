@@ -11,12 +11,13 @@ datasource db {
 }
 
 model User {
-  id        String   @id
+  id        String    @id
   name      String
   password  String
-  email     String   @unique
-  createdAt DateTime @default(now()) @map("created_at")
+  email     String    @unique
+  createdAt DateTime  @default(now()) @map("created_at")
   Admin     Admin[]
+  Session   Session[]
 
   @@map("users")
 }
@@ -28,4 +29,14 @@ model Admin {
   createdAt DateTime @default(now()) @map("created_at")
 
   @@map("admins")
+}
+
+model Session {
+  id        String   @id
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now()) @map("created_at")
+  expiresAt DateTime
+
+  @@map("sessions")
 }
