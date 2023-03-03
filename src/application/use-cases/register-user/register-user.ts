@@ -21,6 +21,11 @@ export const registerUserUseCaseFactory: RegisterUserUseCaseFactory = ({
   sessionRepository
 }) => {
   return async (userData: RegisterUserSchema) => {
+    const userAlreadyExists = await userRepository.findByEmail(userData.email)
+    if (userAlreadyExists?.id) {
+      throw new Error('User already exists')
+    }
+
     if (userData.password !== userData.confirmPassword) {
       throw new Error('Password mismatching')
     }

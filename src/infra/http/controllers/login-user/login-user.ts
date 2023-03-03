@@ -8,7 +8,7 @@ type LoginUserController = Controller<{
   loginUserValidator: LoginUserValidator
 }>
 
-export const registerUserControllerFactory: LoginUserController = ({
+export const loginUserControllerFactory: LoginUserController = ({
   loginUserUseCase,
   loginUserValidator,
 }) => {
@@ -21,6 +21,6 @@ export const registerUserControllerFactory: LoginUserController = ({
     const sessionId = await loginUserUseCase(userData.data)
     cookies.set('session_id', sessionId)
 
-    return ok('/', { cookies })
+    return ok('index', { cookies })
   }
 }

@@ -3,7 +3,7 @@ import type { UserRepository } from '@application/interfaces/user-repository'
 
 import { loadUserEntity } from '../utils/load-entity'
 
-export const prismaEventRepositoryFactory: (prisma: PrismaClient) => UserRepository = (prisma) => ({
+export const prismaUserRepositoryFactory: (prisma: PrismaClient) => UserRepository = (prisma) => ({
   save: async (userData) => {
     await prisma.user.upsert({
       where: {

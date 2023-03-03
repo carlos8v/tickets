@@ -21,6 +21,6 @@ export const registerUserControllerFactory: RegisterUserController = ({
     const sessionId = await registerUserUseCase(userData.data)
     cookies.set('session_id', sessionId)
 
-    return ok('/', { cookies })
+    return ok('index', { cookies })
   }
 }

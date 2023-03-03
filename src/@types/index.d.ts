@@ -2,9 +2,9 @@ import type { HttpHelper } from '@infra/http/helpers/http-helper'
 
 type HttpRequest = {
   body: Record<string, any>
-  query: Record<string, string | string[]>
+  query: Record<string, string | object>
   params: Record<string, string>
-  headers: Record<string, string>
+  headers: Map<string, string>
   cookies: Map<string, string>
 }
 

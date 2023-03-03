@@ -3,7 +3,7 @@ import type { SessionRepository } from '@application/interfaces/session-reposito
 
 import { loadSessionEntity } from '../utils/load-entity'
 
-export const prismaEventRepositoryFactory: (prisma: PrismaClient) => SessionRepository = (prisma) => ({
+export const prismaSessionRepositoryFactory: (prisma: PrismaClient) => SessionRepository = (prisma) => ({
   save: async (sessionData) => {
     await prisma.session.upsert({
       where: {

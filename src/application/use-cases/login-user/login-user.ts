@@ -25,7 +25,7 @@ export const loginUserUseCaseFactory: LoginUserUseCaseFactory = ({
     if (!user?.id) throw new Error('Invalid user')
 
     const correctPass = await comparePassword(password, user.password)
-    if (correctPass) throw new Error('Invalid credentials')
+    if (!correctPass) throw new Error('Invalid credentials')
 
     const session = makeSession({ userId: user.id })
     await sessionRepository.save(session)
