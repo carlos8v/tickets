@@ -1,7 +1,9 @@
 import type { RegisterUserUseCase } from '@application/use-cases/register-user/register-user'
 import type { RegisterUserValidator } from '@application/use-cases/register-user/register-user-validator'
 
-import { ok, badRequest } from '@infra/http/helpers/http-helper'
+import { applicationErrors } from '@application/errors'
+
+import { renderTemplate } from '@infra/http/helpers/http-helper'
 
 type RegisterUserController = Controller<{
   registerUserUseCase: RegisterUserUseCase
@@ -15,12 +17,25 @@ export const registerUserControllerFactory: RegisterUserController = ({
   return async ({ body, cookies }) => {
     const userData = registerUserValidator.safeParse(body)
     if (!userData.success) {
-      return badRequest('/register', { data: { error: 'Invalid user body' } })
+      return renderTemplate('error', {
+        data: {
+          error: 'Invalid user body'
+        }
+      })
     }
 
-    const sessionId = await registerUserUseCase(userData.data)
-    cookies.set('session_id', sessionId)
+    const newUser = await registerUserUseCase(userData.data)
+    if (newUser.isLeft()) {
+      return renderTemplate('register', {
+        data: {
+          ...userData.data,
+          error: applicationErrors[newUser.value]
+        }
+      })
+    }
 
-    return ok('index', { cookies })
+    cookies.set('session_id', newUser.value)
+
+    return renderTemplate('index', { cookies })
   }
 }

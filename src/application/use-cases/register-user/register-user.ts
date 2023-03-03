@@ -1,3 +1,6 @@
+import type { Either } from '@domain/utils/either'
+import { left, right } from '@domain/utils/either'
+
 import { makeUser, hashPass } from '@domain/user'
 import { makeSession } from '@domain/session'
 
@@ -6,29 +9,39 @@ import type { SessionRepository } from '@application/interfaces/session-reposito
 
 import type { RegisterUserSchema } from './register-user-validator'
 
+import {
+  kUserAlreadyExists,
+  kInvalidUserCredentials,
+  kMismatchingUserPass,
+} from '@application/errors'
+
 type RegisterUserUseCaseFactory = UseCase<
   {
     userRepository: UserRepository
     sessionRepository: SessionRepository
   },
   RegisterUserSchema,
-  Promise<string>
+  Promise<
+    Either<
+      | typeof kUserAlreadyExists
+      | typeof kInvalidUserCredentials
+      | typeof kMismatchingUserPass,
+      string
+    >
+  >
 >
 export type RegisterUserUseCase = ReturnType<RegisterUserUseCaseFactory>
 
 export const registerUserUseCaseFactory: RegisterUserUseCaseFactory = ({
   userRepository,
-  sessionRepository
+  sessionRepository,
 }) => {
   return async (userData: RegisterUserSchema) => {
-    const userAlreadyExists = await userRepository.findByEmail(userData.email)
-    if (userAlreadyExists?.id) {
-      throw new Error('User already exists')
-    }
+    if (userData.password !== userData.confirmPassword)
+      return left(kMismatchingUserPass)
 
-    if (userData.password !== userData.confirmPassword) {
-      throw new Error('Password mismatching')
-    }
+    const userAlreadyExists = await userRepository.findByEmail(userData.email)
+    if (userAlreadyExists?.id) return left(kUserAlreadyExists)
 
     const cryptPass = await hashPass(userData.password)
 
@@ -42,6 +55,6 @@ export const registerUserUseCaseFactory: RegisterUserUseCaseFactory = ({
     const session = makeSession({ userId: user.id })
     await sessionRepository.save(session)
 
-    return session.id
+    return right(session.id)
   }
 }
