@@ -1,5 +1,6 @@
 import { resolve } from 'path'
 import express from 'express'
+
 import { initializeRoutes } from './routes/index'
 
 export const app = express()
