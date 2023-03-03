@@ -7,6 +7,8 @@ export const app = express()
 
 app.set('view engine', 'ejs')
 app.set('views', 'public/pages')
+
+app.use('/static', express.static(resolve(__dirname, '../../..', 'public', 'static')))
 app.use('/styles', express.static(resolve(__dirname, '../../..', 'public', 'styles')))
 
 app.use(express.urlencoded({
