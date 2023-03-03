@@ -3,6 +3,7 @@ import type { LoginUserValidator } from '@application/use-cases/login-user/login
 
 import { renderTemplate } from '@infra/http/helpers/http-helper'
 
+import { infraErrors, kInvalidBody } from '@infra/http/errors'
 import { applicationErrors } from '@application/errors'
 
 type LoginUserController = Controller<{
@@ -19,7 +20,8 @@ export const loginUserControllerFactory: LoginUserController = ({
     if (!userData.success) {
       return renderTemplate('error', {
         data: {
-          error: 'Invalid user body'
+          error: infraErrors[kInvalidBody],
+          goBack: 'login'
         }
       })
     }

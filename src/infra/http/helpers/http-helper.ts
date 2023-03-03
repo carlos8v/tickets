@@ -8,8 +8,7 @@ type RouteOpts = Partial<Pick<HttpHelper, 'data' | 'cookies'>>
 
 const defaultRouteOpts = {
   data: null,
-  cookies: new Map(),
-  error: true
+  cookies: new Map()
 }
 
 export const renderTemplate = (

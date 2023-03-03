@@ -1,6 +1,7 @@
 import type { RegisterUserUseCase } from '@application/use-cases/register-user/register-user'
 import type { RegisterUserValidator } from '@application/use-cases/register-user/register-user-validator'
 
+import { infraErrors, kInvalidBody } from '@infra/http/errors'
 import { applicationErrors } from '@application/errors'
 
 import { renderTemplate } from '@infra/http/helpers/http-helper'
@@ -19,7 +20,8 @@ export const registerUserControllerFactory: RegisterUserController = ({
     if (!userData.success) {
       return renderTemplate('error', {
         data: {
-          error: 'Invalid user body'
+          error: infraErrors[kInvalidBody],
+          goBack: 'register'
         }
       })
     }

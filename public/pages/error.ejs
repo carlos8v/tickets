@@ -15,7 +15,7 @@
         action="/login"
       >
         <h1 class="text-2xl mb-8 font-medium"><%= error %></h1>
-        <a href="">Voltar</a>
+        <a href="<%= goBack ? goBack : '/login' %>">Voltar</a>
       </form>
     </div>
   </body>
