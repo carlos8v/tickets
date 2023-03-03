@@ -2,7 +2,6 @@ import { prisma } from '@infra/db/prisma/prisma-client'
 import { prismaUserRepositoryFactory } from '@infra/db/prisma/repositories/user-repository'
 import { prismaSessionRepositoryFactory } from '@infra/db/prisma/repositories/session-repository'
 
-
 import { registerUserUseCaseFactory } from '@application/use-cases/register-user/register-user'
 import { registerUserSchema } from '@application/use-cases/register-user/register-user-validator'
 

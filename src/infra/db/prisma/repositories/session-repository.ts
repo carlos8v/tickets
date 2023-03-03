@@ -22,9 +22,9 @@ export const prismaSessionRepositoryFactory: (prisma: PrismaClient) => SessionRe
       }
     })
   },
-  findByUserId: async (userId) => {
+  findBySessionId: async (sessionId) => {
     const session = await prisma.session.findFirst({
-      where: { userId }
+      where: { id: sessionId }
     })
 
     if (!session?.id) return null

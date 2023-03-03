@@ -1,7 +1,9 @@
 import type { IncomingHttpHeaders } from 'http'
-import type { Request, Response } from 'express'
+import type { NextFunction, Request, Response } from 'express'
 
 type ControllerFunction = ReturnType<Controller<any>>
+
+import { kUnexpectedError } from '../errors'
 
 function parseHeaders(headers: IncomingHttpHeaders) {
   return Object.entries(headers).reduce((headersMap, [name, value]) => {
@@ -23,6 +25,41 @@ function parseQuery(query: Request['query']) {
   return Object.fromEntries(queryMap.entries())
 }
 
+export const expressMiddlewareAdapter = (controller: ControllerFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const response = await controller({
+        body: req.body,
+        headers: parseHeaders(req.headers),
+        params: req.params,
+        query: parseQuery(req.query),
+        cookies: new Map(Object.entries(req.cookies)),
+      })
+
+      if (response.cookies.size) {
+        [...response.cookies.entries()].forEach(([name, value]) => {
+          res.cookie(name, value, {
+            path: '/',
+            httpOnly: true,
+            maxAge: 1000 * 60 * 60 * 24
+          })
+        })
+      }
+
+      if (response.redirect) {
+        return res.redirect(response.redirect)
+      }
+
+      return next();
+    } catch (error: Error | any) {
+      console.error(error)
+      return res.render('error', {
+        error: error?.message || kUnexpectedError
+      })
+    }
+  }
+}
+
 export const expressRouteAdapter = (controller: ControllerFunction) => {
   return async (req: Request, res: Response) => {
     try {
@@ -31,7 +68,7 @@ export const expressRouteAdapter = (controller: ControllerFunction) => {
         headers: parseHeaders(req.headers),
         params: req.params,
         query: parseQuery(req.query),
-        cookies: new Map(),
+        cookies: new Map(Object.entries(req.cookies)),
       })
 
       if (response.cookies.size) {
@@ -39,16 +76,20 @@ export const expressRouteAdapter = (controller: ControllerFunction) => {
           res.cookie(name, value, {
             path: '/',
             httpOnly: true,
-            maxAge: 1000 * 60
+            maxAge: 1000 * 60 * 60 * 24
           })
         })
+      }
+
+      if (response.redirect) {
+        return res.redirect(response.redirect)
       }
 
       return res.render(response.view, response?.data || {})
     } catch (error: Error | any) {
       console.error(error)
       return res.render('error', {
-        error: error?.message || 'Um erro inesperado ocorreu',
+        error: error?.message || kUnexpectedError
       })
     }
   }

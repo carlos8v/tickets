@@ -18,26 +18,28 @@ export const loginUserControllerFactory: LoginUserController = ({
   return async ({ body, cookies }) => {
     const userData = loginUserValidator.safeParse(body)
     if (!userData.success) {
-      return renderTemplate('error', {
+      return renderTemplate({
+        view: 'error',
         data: {
           error: infraErrors[kInvalidBody],
-          goBack: 'login'
-        }
+          goBack: 'login',
+        },
       })
     }
 
     const loggedUser = await loginUserUseCase(userData.data)
     if (loggedUser.isLeft()) {
-      return renderTemplate('login', {
+      return renderTemplate({
+        view: 'login',
         data: {
           ...userData.data,
-          error: applicationErrors[loggedUser.value]
-        }
+          error: applicationErrors[loggedUser.value],
+        },
       })
     }
 
     cookies.set('session_id', loggedUser.value)
 
-    return renderTemplate('index', { cookies })
+    return renderTemplate({ redirect: '/', cookies })
   }
 }

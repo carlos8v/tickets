@@ -13,31 +13,33 @@ type RegisterUserController = Controller<{
 
 export const registerUserControllerFactory: RegisterUserController = ({
   registerUserUseCase,
-  registerUserValidator
+  registerUserValidator,
 }) => {
   return async ({ body, cookies }) => {
     const userData = registerUserValidator.safeParse(body)
     if (!userData.success) {
-      return renderTemplate('error', {
+      return renderTemplate({
+        view: 'error',
         data: {
           error: infraErrors[kInvalidBody],
-          goBack: 'register'
-        }
+          goBack: 'register',
+        },
       })
     }
 
     const newUser = await registerUserUseCase(userData.data)
     if (newUser.isLeft()) {
-      return renderTemplate('register', {
+      return renderTemplate({
+        view: 'register',
         data: {
           ...userData.data,
-          error: applicationErrors[newUser.value]
-        }
+          error: applicationErrors[newUser.value],
+        },
       })
     }
 
     cookies.set('session_id', newUser.value)
 
-    return renderTemplate('index', { cookies })
+    return renderTemplate({ redirect: '/', cookies })
   }
 }
