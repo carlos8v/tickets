@@ -7,15 +7,18 @@
     "start": "node dist/infra/http/server.js",
     "dev": "npm run dev:server & npm run dev:css",
     "dev:server": "tsx watch ./src/infra/http/server.ts",
-    "dev:css": "tailwindcss -i ./public/styles/tailwind.css -o ./public/styles/main.css --watch",
+    "dev:css": "tailwindcss -i ./static/styles/tailwind.css -o ./static/styles/main.css --watch",
     "prebuild": "rimraf dist/",
     "build": "npm run build:server && npm run build:css",
     "build:server": "tsc -p tsconfig-build.json",
-    "build:css": "tailwindcss -i ./public/styles/tailwind.css -o ./public/styles/main.css",
+    "build:css": "tailwindcss -i ./static/styles/tailwind.css -o ./static/styles/main.css",
     "postbuild": "tscpaths -p tsconfig-build.json -s ./src -o ./dist"
   },
   "author": "Carlos Souza <carlos.pessoal@hotmail.com",
   "license": "MIT",
+  "prisma": {
+    "schema": "src/infra/db/prisma/schema.prisma"
+  },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
     "@types/cookie-parser": "^1.4.3",

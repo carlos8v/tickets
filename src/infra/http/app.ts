@@ -8,10 +8,9 @@ export const app = express()
 
 app.use(cookieParser(process.env.SESSION_SECRET!))
 app.set('view engine', 'ejs')
-app.set('views', 'public/pages')
+app.set('views', 'views/pages')
 
-app.use('/static', express.static(resolve(__dirname, '../../..', 'public', 'static')))
-app.use('/styles', express.static(resolve(__dirname, '../../..', 'public', 'styles')))
+app.use('/static', express.static(resolve(__dirname, '../../..', 'static')))
 
 app.use(express.urlencoded({
   extended: true

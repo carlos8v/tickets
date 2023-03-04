@@ -7,18 +7,18 @@ Sistema onde se poderá criar tickets para solicitação de suporte ao usuário.
 ```
 .
 ├── dist            <-- Arquivos buildados da aplicação
-├── prisma          <-- Esquema de banco de dados
-├── public
-│ ├── components    <-- Componentes de UI
-│ ├── pages         <-- Páginas html/ejs
+├── src
+│ ├── @types        <-- Tipagem geral da aplicação
+│ ├── application   <-- Implementação de regra de negócio
+│ ├── domain        <-- Entidades da aplicação
+│ └── infra
+│   ├── db          <-- Implementação de banco de dados
+│   └── http        <-- Implementação de servidor web
+├── static
 │ └── styles        <-- Estilização de arquivos
-└── src
-  ├── @types        <-- Tipagem geral da aplicação
-  ├── application   <-- Implementação de regra de negócio
-  ├── domain        <-- Entidades da aplicação
-  └── infra
-    ├── db          <-- Implementação de banco de dados
-    └── http        <-- Implementação de servidor web
+└── views
+  ├── components    <-- Componentes de UI
+  └── pages         <-- Páginas html/ejs
 ```
 
 ## Requisitos funcionais
