@@ -2,7 +2,7 @@ export type HttpHelper = {
   view: string
   redirect?: string
   data?: Record<string | number, any> | null
-  cookies: Map<string, string>
+  cookies: Map<string, string | null>
 }
 
 type RouteProps = Partial<HttpHelper>
@@ -31,3 +31,5 @@ export const nextMiddleware = (
   data: opts?.data || null,
   cookies: opts?.cookies || new Map(),
 })
+
+export const parseCookie = (value: string, maxAge: number) => `${value};${maxAge}`

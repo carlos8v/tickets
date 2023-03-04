@@ -16,7 +16,8 @@ export const authenticateUserMiddlewareFactory: AuthenticateUserMiddlewareFactor
 
     const session = await authenticateUseUseCase(cookies.get('session_id')!)
     if (session.isLeft()) {
-      return nextMiddleware({ redirect: '/login'})
+      cookies.set('session_id', null)
+      return nextMiddleware({ redirect: '/login', cookies })
     }
 
     return nextMiddleware()

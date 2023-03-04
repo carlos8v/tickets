@@ -10,15 +10,12 @@ import { kNotAuthorizedUser } from '@application/errors'
 type AuthenticateUseUseCaseFactory = UseCase<
   { sessionRepository: SessionRepository },
   string,
-  Promise<Either<
-    typeof kNotAuthorizedUser,
-    SessionModel
-  >>
+  Promise<Either<typeof kNotAuthorizedUser, SessionModel>>
 >
 export type AuthenticateUseUseCase = ReturnType<AuthenticateUseUseCaseFactory>
 
 export const authenticateUserUseCaseFactory: AuthenticateUseUseCaseFactory = ({
-  sessionRepository
+  sessionRepository,
 }) => {
   return async (sessionId) => {
     const session = await sessionRepository.findBySessionId(sessionId)

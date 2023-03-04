@@ -2,6 +2,8 @@ import { prisma } from '@infra/db/prisma/prisma-client'
 import { prismaUserRepositoryFactory } from '@infra/db/prisma/repositories/user-repository'
 import { prismaSessionRepositoryFactory } from '@infra/db/prisma/repositories/session-repository'
 
+import { sessionService } from '@infra/http/services/session-service'
+
 import { registerUserUseCaseFactory } from '@application/use-cases/register-user/register-user'
 import { registerUserSchema } from '@application/use-cases/register-user/register-user-validator'
 
@@ -14,6 +16,7 @@ const registerUserUseCase = registerUserUseCaseFactory({
 })
 
 export const registerUserController = registerUserControllerFactory({
+  sessionService,
   registerUserUseCase,
   registerUserValidator: registerUserSchema
 })

@@ -1,17 +1,20 @@
 import type { LoginUserUseCase } from '@application/use-cases/login-user/login-user'
 import type { LoginUserValidator } from '@application/use-cases/login-user/login-user-validator'
 
+import type { SessionService } from '@infra/http/interfaces/session-service'
 import { renderTemplate } from '@infra/http/helpers/http-helper'
 
 import { infraErrors, kInvalidBody } from '@infra/http/errors'
 import { applicationErrors } from '@application/errors'
 
 type LoginUserController = Controller<{
+  sessionService: SessionService
   loginUserUseCase: LoginUserUseCase
   loginUserValidator: LoginUserValidator
 }>
 
 export const loginUserControllerFactory: LoginUserController = ({
+  sessionService,
   loginUserUseCase,
   loginUserValidator,
 }) => {
@@ -27,18 +30,18 @@ export const loginUserControllerFactory: LoginUserController = ({
       })
     }
 
-    const loggedUser = await loginUserUseCase(userData.data)
-    if (loggedUser.isLeft()) {
+    const userSession = await loginUserUseCase(userData.data)
+    if (userSession.isLeft()) {
       return renderTemplate({
         view: 'login',
         data: {
           ...userData.data,
-          error: applicationErrors[loggedUser.value],
+          error: applicationErrors[userSession.value],
         },
       })
     }
 
-    cookies.set('session_id', loggedUser.value)
+    cookies.set('session_id', sessionService.formatSession(userSession.value))
 
     return renderTemplate({ redirect: '/', cookies })
   }

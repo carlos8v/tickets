@@ -5,7 +5,7 @@ type HttpRequest = {
   query: Record<string, string | object>
   params: Record<string, string>
   headers: Map<string, string>
-  cookies: Map<string, string>
+  cookies: Map<string, string | null>
 }
 
 declare global {

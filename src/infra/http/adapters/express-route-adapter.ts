@@ -37,24 +37,35 @@ export const expressMiddlewareAdapter = (controller: ControllerFunction) => {
       })
 
       if (response.cookies.size) {
-        [...response.cookies.entries()].forEach(([name, value]) => {
-          res.cookie(name, value, {
+        for (const [name, value] of [...response.cookies.entries()]) {
+          if (value === null) {
+            res.clearCookie(name, {
+              path: '/',
+              httpOnly: true
+            })
+            continue
+          }
+
+          const [stripedValue, maxAge] = value.split(';')
+          if (!maxAge) continue
+
+          res.cookie(name, stripedValue, {
             path: '/',
             httpOnly: true,
-            maxAge: 1000 * 60 * 60 * 24
+            maxAge: Number(maxAge),
           })
-        })
+        }
       }
 
       if (response.redirect) {
         return res.redirect(response.redirect)
       }
 
-      return next();
+      return next()
     } catch (error: Error | any) {
       console.error(error)
       return res.render('error', {
-        error: error?.message || kUnexpectedError
+        error: error?.message || kUnexpectedError,
       })
     }
   }
@@ -72,13 +83,24 @@ export const expressRouteAdapter = (controller: ControllerFunction) => {
       })
 
       if (response.cookies.size) {
-        [...response.cookies.entries()].forEach(([name, value]) => {
-          res.cookie(name, value, {
+        for (const [name, value] of [...response.cookies.entries()]) {
+          if (value === null) {
+            res.clearCookie(name, {
+              path: '/',
+              httpOnly: true
+            })
+            continue
+          }
+
+          const [stripedValue, maxAge] = value.split(';')
+          if (!maxAge) continue
+
+          res.cookie(name, stripedValue, {
             path: '/',
             httpOnly: true,
-            maxAge: 1000 * 60 * 60 * 24
+            maxAge: Number(maxAge),
           })
-        })
+        }
       }
 
       if (response.redirect) {
@@ -89,7 +111,7 @@ export const expressRouteAdapter = (controller: ControllerFunction) => {
     } catch (error: Error | any) {
       console.error(error)
       return res.render('error', {
-        error: error?.message || kUnexpectedError
+        error: error?.message || kUnexpectedError,
       })
     }
   }

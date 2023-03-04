@@ -1,8 +1,9 @@
 import type { Either } from '@domain/utils/either'
 import { left, right } from '@domain/utils/either'
 
-import { comparePassword } from '@domain/user'
+import type { SessionModel } from '@domain/session'
 import { makeSession } from '@domain/session'
+import { comparePassword } from '@domain/user'
 
 import type { UserRepository } from '@application/interfaces/user-repository'
 import type { SessionRepository } from '@application/interfaces/session-repository'
@@ -17,7 +18,9 @@ type LoginUserUseCaseFactory = UseCase<
     sessionRepository: SessionRepository
   },
   LoginUserSchema,
-  Promise<Either<typeof kInvalidUser | typeof kInvalidUserCredentials, string>>
+  Promise<
+    Either<typeof kInvalidUser | typeof kInvalidUserCredentials, SessionModel>
+  >
 >
 export type LoginUserUseCase = ReturnType<LoginUserUseCaseFactory>
 
@@ -35,6 +38,6 @@ export const loginUserUseCaseFactory: LoginUserUseCaseFactory = ({
     const session = makeSession({ userId: user.id })
     await sessionRepository.save(session)
 
-    return right(session.id)
+    return right(session)
   }
 }
