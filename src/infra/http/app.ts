@@ -1,15 +1,15 @@
-import type { Server } from 'http'
-import type { Express } from 'express'
-
 import { resolve } from 'path'
+
+import type { Server } from 'http'
+import { createServer } from 'http'
 import express from 'express'
-import { Server as WebSocketServer } from 'rpc-websockets'
+import { Server as WebSocketServer } from 'socket.io'
 
 import cookieParser from 'cookie-parser'
 
 import { initializeRoutes } from './routes/index'
 
-export const setupServer = (): Express => {
+export const setupServer = (): Server => {
   const app = express()
   
   app.use(cookieParser(process.env.SESSION_SECRET!))
@@ -24,14 +24,20 @@ export const setupServer = (): Express => {
   
   initializeRoutes(app)
 
-  return app
+  return createServer(app)
 }
 
-export const setupWebSocket = (server: Server) => {
-  const wsServer = new WebSocketServer({ server })
+export const setupWebSocket = (httpServer: Server) => {
+  const wsServer = new WebSocketServer(httpServer)
+  
+  const UUID_REGEX = /^\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 
-  wsServer.register('sum', (params) => {
-    const [n1, n2] = params as number[]
-    return n1 + n2
+  const dynamicNs = wsServer.of(UUID_REGEX)
+  dynamicNs.on('connection', (socket) => {
+    const ns = socket.nsp
+
+    socket.on('sendMessage', (params) => {
+      ns.emit('messageReceived', params)
+    })
   })
 }

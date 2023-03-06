@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
+    <link rel="stylesheet" href="/static/styles/main.css" />
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+    ></script>
+    <title>Tickets</title>
+  </head>
+  <body x-data="{ text: '' }">
+    <div class="w-full h-screen w-full flex">
+      <main class="h-full w-full max-w-7xl mx-auto flex flex-col">
+        <section class="flex-1 flex flex-col border-l border-r border-zinc-300">
+          <div class="h-16 border-b border-zinc-300 flex items-center px-4">
+            <h5 class="text-lg">Chat</h5>
+          </div>
+          <div class="p-4">
+            <ul>
+              <template x-for="message in $store.messages">
+                <li x-text="message"></li>
+              </template>
+            </ul>
+          </div>
+        </section>
+        <section class="border border-zinc-300">
+          <form
+            class="w-full flex p-4 gap-6"
+            x-on:submit.prevent="send(text); text = '';"
+          >
+            <input
+              autofocus
+              autocapitalize=""
+              type="text"
+              class="w-full p-2 bg-white border border-gray-300"
+              x-model="text"
+              placeholder="Mensagem..."
+            />
+            <button type="submit" class="px-4 text-white bg-blue-500 rounded">
+              Enviar
+            </button>
+          </form>
+        </section>
+      </main>
+    </div>
+    <script>
+      let socket
+      const chatId = "<%= id %>"
+
+      async function send(msg) {
+        socket.emit('sendMessage', msg)
+      }
+
+      async function setup() {
+        document.addEventListener('alpine:init', () => {
+          Alpine.store('messages', [])
+        })
+
+        socket = await io(`/${chatId}`)
+        socket.on('messageReceived', (message) => {
+          Alpine.store('messages').push(message)
+        })
+      }
+
+      setup()
+    </script>
+  </body>
+</html>
