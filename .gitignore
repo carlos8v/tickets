@@ -1,6 +1,5 @@
 node_modules/
 dist/**
-static/js
 static/styles/main.css
 
 .env*
