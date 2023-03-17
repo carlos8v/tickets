@@ -16,17 +16,21 @@ model User {
   password  String
   email     String    @unique
   createdAt DateTime  @default(now()) @map("created_at")
-  Admin     Admin[]
-  Session   Session[]
+  deletedAt DateTime? @map("deleted_at")
+  admin     Admin?
+  sessions  Session[]
+  reported  Ticket[]
 
   @@map("users")
 }
 
 model Admin {
-  id        String   @id
-  userId    String   @map("user_id")
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now()) @map("created_at")
+  id             String    @id
+  userId         String    @unique @map("user_id")
+  user           User      @relation(fields: [userId], references: [id], onDelete: Restrict)
+  createdAt      DateTime  @default(now()) @map("created_at")
+  deletedAt      DateTime? @map("deleted_at")
+  responsableFor Ticket[]
 
   @@map("admins")
 }
@@ -34,9 +38,23 @@ model Admin {
 model Session {
   id        String   @id
   userId    String   @map("user_id")
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Restrict)
   createdAt DateTime @default(now()) @map("created_at")
   expiresAt DateTime
 
   @@map("sessions")
+}
+
+model Ticket {
+  id            String    @id
+  subject       String
+  reportedBy    String    @map("reported_by")
+  reporter      User      @relation(fields: [reportedBy], references: [id], onDelete: Restrict)
+  responsableId String?   @map("responsable_id")
+  responsable   Admin?    @relation(fields: [responsableId], references: [id], onDelete: Restrict)
+  status        String    @default("OPENED")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime? @map("updated_at")
+
+  @@map("tickets")
 }

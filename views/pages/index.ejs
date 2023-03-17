@@ -4,15 +4,19 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg"/>
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
     <link rel="stylesheet" href="/static/styles/main.css" />
     <script src="https://unpkg.com/feather-icons"></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+    ></script>
     <title>Tickets</title>
   </head>
   <body>
     <div class="w-full h-screen w-full flex">
       <%- include('../components/sidebar'); %>
-      <main class="h-full w-full flex flex-col sm:flex-row">
+      <main class="h-full w-full flex flex-col sm:flex-row overflow-auto">
         <section
           class="w-full sm:max-w-sm sm:h-full bg-gray-100 border-b sm:border-r border-zinc-300"
         >
@@ -24,7 +28,12 @@
               for="search-tickets"
               class="w-full p-2 bg-white flex border border-gray-300 items-center"
             >
-              <i class="mr-2 text-gray-400" data-feather="search" width="22" height="22"></i>
+              <i
+                class="mr-2 text-gray-400"
+                data-feather="search"
+                width="22"
+                height="22"
+              ></i>
               <input
                 id="search-tickets"
                 type="text"
@@ -33,16 +42,111 @@
               />
             </label>
           </div>
+          <div class="p-4">
+            <ul class="ml-4 flex flex-col gap-3">
+              <li class="font-medium cursor-pointer">Todos</li>
+              <li class="text-zinc-600 cursor-pointer">Abertos</li>
+              <li class="text-zinc-600 cursor-pointer">Resolvidos</li>
+              <li class="text-zinc-600 cursor-pointer">Não resolvidos</li>
+              <li class="text-zinc-600 cursor-pointer">Arquivados</li>
+            </ul>
+          </div>
         </section>
-        <section class="flex-1">
+        <section class="flex-1 overflow-auto">
           <div class="h-16 border-b border-zinc-300 flex items-center px-4">
             <h5 class="text-lg">Todos os tickets</h5>
+          </div>
+          <div class="p-4 overflow-auto">
+            <div class="min-w-[1024px] w-full">
+              <table class="border-collapse table-auto w-full text-sm">
+                <thead>
+                  <tr class="border-b border-gray-300">
+                    <th class="pl-4 text-left">
+                      <input type="checkbox" class="w-4 h-4" />
+                    </th>
+                    <th class="p-4 text-left font-medium">Quem reportou</th>
+                    <th class="p-4 text-left font-medium">Assunto</th>
+                    <th class="p-4 text-left font-medium">Responsável</th>
+                    <th class="p-4 text-left font-medium">Status</th>
+                    <th class="p-4 text-left font-medium">
+                      Última atualização
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% tickets.forEach(function(ticket) { %>
+                  <tr
+                    class="odd:bg-gray-100 hover:bg-gray-200"
+                    x-data="{ status: '<%= ticket.status %>' }"
+                  >
+                    <td class="pl-4">
+                      <input
+                        id="<%= ticket.id %>"
+                        type="checkbox"
+                        class="w-4 h-4"
+                      />
+                    </td>
+                    <td class="p-4">
+                      <div class="flex items-center">
+                        <img
+                          src="https://ui-avatars.com/api/?rounded=true&background=FF922D&color=fff&name=<%= ticket.reporter.name.split(' ').join('+') %>"
+                          alt="<%= ticket.reporter.name %> image"
+                          class="w-9 h-9 mr-3"
+                        />
+                        <div class="flex flex-col">
+                          <p class=""><%= ticket.reporter.name %></p>
+                          <span class="text-zinc-400 text-sm">
+                            <%= ticket.reporter.email %>
+                          </span>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="p-4"><%= ticket.subject %></td>
+                    <td class="p-4"><%= ticket.responsable.name %></td>
+                    <td class="p-4">
+                      <span
+                        x-data
+                        :class="$store.statusClass['<%= ticket.status %>']"
+                        x-text="$store.statusLabel['<%= ticket.status %>']"
+                      ></span>
+                    </td>
+                    <td class="p-4">
+                      <%= new Date(ticket?.updatedAt ||
+                      ticket.createdAt).toLocaleString() %>
+                    </td>
+                  </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
           </div>
         </section>
       </main>
     </div>
     <script>
       feather.replace()
+
+      async function setup() {
+        feather.replace()
+
+        document.addEventListener('alpine:init', () => {
+          Alpine.store('statusClass', {
+            OPENED: 'px-2 py-1 text-white rounded-full bg-blue-400',
+            ARCHIVED: 'px-2 py-1 text-white rounded-full bg-orange-400',
+            RESOLVED: 'px-2 py-1 text-white rounded-full bg-green-400',
+            UNRESOLVED: 'px-2 py-1 text-white rounded-full bg-red-400',
+          })
+
+          Alpine.store('statusLabel', {
+            OPENED: 'Aberto',
+            ARCHIVED: 'Arquivado',
+            RESOLVED: 'Resolvido',
+            UNRESOLVED: 'Não resolvido',
+          })
+        })
+      }
+
+      setup()
     </script>
   </body>
 </html>
