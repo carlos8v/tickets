@@ -74,7 +74,16 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <% tickets.forEach(function(ticket) { %>
+                  <% if (!tickets.length) { %>
+                  <tr>
+                    <td
+                      colspan="6"
+                      class="text-center pt-8 pb-4 text-zinc-400 font-bold"
+                    >
+                      Nenhum ticket disponível
+                    </td>
+                  </tr>
+                  <% } %> <% tickets.forEach(function(ticket) { %>
                   <tr
                     class="odd:bg-gray-100 hover:bg-gray-200"
                     x-data="{ status: '<%= ticket.status %>' }"
