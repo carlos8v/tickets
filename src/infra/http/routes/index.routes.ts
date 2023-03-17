@@ -16,6 +16,6 @@ indexRouter.get(
 )
 
 indexRouter.get(
-  '/:id',
+  '/chat/:id',
   expressRouteAdapter(chatPage)
 )
