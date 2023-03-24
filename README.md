@@ -6,7 +6,8 @@ Sistema onde se poderá criar tickets para solicitação de suporte ao usuário.
 
 ```
 .
-├── dist            <-- Arquivos buildados da aplicação
+├── dist            <-- Arquivos buildados da backend
+├── public          <-- Arquivos buildados do frontend
 ├── src
 │ ├── @types        <-- Tipagem geral da aplicação
 │ ├── application   <-- Implementação de regra de negócio
@@ -14,18 +15,17 @@ Sistema onde se poderá criar tickets para solicitação de suporte ao usuário.
 │ └── infra
 │   ├── db          <-- Implementação de banco de dados
 │   └── http        <-- Implementação de servidor web
-├── static
-│ └── styles        <-- Estilização de arquivos
 └── views
+  ├── assets        <-- Arquivos públicos
   ├── components    <-- Componentes de UI
-  └── pages         <-- Páginas html/ejs
+  └── pages         <-- Páginas da aplicação
 ```
 
 ## Requisitos funcionais
 
 - [ ] Contas
-  - [ ] Realizar login
-  - [ ] Criar conta
+  - [x] Realizar login
+  - [x] Criar conta
   - [ ] Adicionar usuário como suporte
 - [ ] Tickets
   - [ ] Criar novo ticket

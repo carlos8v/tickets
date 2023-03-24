@@ -61,10 +61,6 @@ export const expressMiddlewareAdapter = (controller: ControllerFunction) => {
         }
       }
 
-      if (response.redirect) {
-        return res.redirect(response.redirect)
-      }
-
       return next()
     } catch (error: Error | any) {
       console.error(error)
@@ -107,11 +103,11 @@ export const expressRouteAdapter = (controller: ControllerFunction) => {
         }
       }
 
-      if (response.redirect) {
-        return res.redirect(response.redirect)
+      if (response.html) {
+        return res.sendFile(indexPage)
       }
 
-      return res.sendFile(indexPage)
+      return res.json(response?.data)
     } catch (error: Error | any) {
       console.error(error)
       return res.status(500).json({

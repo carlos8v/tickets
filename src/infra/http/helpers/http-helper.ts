@@ -1,5 +1,5 @@
 export type HttpHelper = {
-  redirect?: string
+  html: boolean;
   data?: Record<string | number, any> | null
   cookies: Map<string, string | null>
 }
@@ -7,24 +7,23 @@ export type HttpHelper = {
 type RouteProps = Partial<HttpHelper>
 
 const defaultRouteProps: RouteProps = {
-  redirect: undefined,
-  data: null,
+  html: false,
   cookies: new Map(),
 }
 
 export const send = (
   opts: RouteProps = defaultRouteProps
 ): HttpHelper => ({
-  redirect: opts.redirect,
-  data: opts?.data || null,
+  html: opts?.html || false,
+  data: opts?.data,
   cookies: opts?.cookies || new Map(),
 })
 
 export const nextMiddleware = (
   opts: RouteProps = defaultRouteProps
 ): HttpHelper => ({
-  redirect: opts.redirect,
-  data: opts?.data || null,
+  html: opts?.html || false,
+  data: opts?.data,
   cookies: opts?.cookies || new Map(),
 })
 

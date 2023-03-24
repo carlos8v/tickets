@@ -24,7 +24,6 @@ export const loginUserControllerFactory: LoginUserController = ({
       return send({
         data: {
           error: infraErrors[kInvalidBody],
-          goBack: 'login',
         },
       })
     }
@@ -33,7 +32,6 @@ export const loginUserControllerFactory: LoginUserController = ({
     if (userSession.isLeft()) {
       return send({
         data: {
-          ...userData.data,
           error: applicationErrors[userSession.value],
         },
       })
@@ -41,6 +39,6 @@ export const loginUserControllerFactory: LoginUserController = ({
 
     cookies.set('session_id', sessionService.formatSession(userSession.value))
 
-    return send({ redirect: '/', cookies })
+    return send({ cookies, data: userSession.value })
   }
 }
