@@ -1,15 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg"/>
-    <link rel="stylesheet" href="/static/styles/main.css" />
-    <script src="https://unpkg.com/feather-icons"></script>
-    <title>Tickets</title>
-  </head>
-  <body>
+export const Login = () => {
+  const error = '';
+
+  return (
     <div class="px-4 bg-gray-100 h-screen grid place-items-center text-center sm:px-0">
       <form
         class="w-full max-w-sm mx-auto flex flex-col"
@@ -35,12 +27,12 @@
           minlength="6"
           required
         />
-        <% if (error) { %>
+        {error ? (
           <div class="my-1 p-2 flex items-center justify-center bg-red-100 text-red-600 border border-red-200 rounded">
             <i class="mr-2" data-feather="info" width="18" height="18"></i>
-            <span><%= error %></span>
+            <span>{error}</span>
           </div>
-        <% } %>
+        ) : null}
         <button
           class="mt-6 py-2 text-white bg-blue-600 rounded hover:bg-blue-500 transition"
           type="submit"
@@ -55,8 +47,5 @@
         </a>
       </form>
     </div>
-    <script>
-      feather.replace()
-    </script>
-  </body>
-</html>
+  )
+}

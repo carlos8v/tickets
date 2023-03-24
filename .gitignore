@@ -1,6 +1,6 @@
 node_modules/
 dist/**
-static/styles/main.css
+static/**
 
 .env*
 !.env.example
