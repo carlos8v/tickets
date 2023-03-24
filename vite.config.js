@@ -6,7 +6,7 @@ export default defineConfig({
   root: './views',
   build: {
     target: 'esnext',
-    outDir: '../static',
+    outDir: '../public',
     emptyOutDir: true,
   },
 })
