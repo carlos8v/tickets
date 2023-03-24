@@ -23,8 +23,8 @@ export const authenticateUserMiddlewareFactory: AuthenticateUserMiddlewareFactor
       return nextMiddleware({ redirect: '/login', cookies })
     }
 
-    if (cookies.get('session_id') !== session.value.id) {
-      cookies.set('session_id', sessionService.formatSession(session.value))
+    if (cookies.get('session_id') !== session.value.session.id) {
+      cookies.set('session_id', sessionService.formatSession(session.value.session))
       return nextMiddleware({ cookies })
     }
 

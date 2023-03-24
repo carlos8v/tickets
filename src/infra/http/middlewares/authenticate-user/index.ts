@@ -1,4 +1,5 @@
 import { prisma } from '@infra/db/prisma/prisma-client'
+import { prismaUserRepositoryFactory } from '@infra/db/prisma/repositories/user-repository'
 import { prismaSessionRepositoryFactory } from '@infra/db/prisma/repositories/session-repository'
 
 import { sessionService } from '@infra/http/services/session-service'
@@ -8,6 +9,7 @@ import { authenticateUserUseCaseFactory } from '@application/use-cases/authentic
 import { authenticateUserMiddlewareFactory } from './authenticate-user'
 
 const authenticateUseUseCase = authenticateUserUseCaseFactory({
+  userRepository: prismaUserRepositoryFactory(prisma),
   sessionRepository: prismaSessionRepositoryFactory(prisma),
 })
 

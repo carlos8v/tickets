@@ -31,5 +31,14 @@ export const prismaUserRepositoryFactory: (prisma: PrismaClient) => UserReposito
     if (!user?.id) return null
 
     return loadUserEntity(user)
+  },
+  findById: async (id) => {
+    const user = await prisma.user.findFirst({
+      where: { id }
+    })
+
+    if (!user?.id) return null
+
+    return loadUserEntity(user)
   }
 })

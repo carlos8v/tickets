@@ -45,7 +45,7 @@ export const expressMiddlewareAdapter = (controller: ControllerFunction) => {
           if (value === null) {
             res.clearCookie(name, {
               path: '/',
-              httpOnly: true
+              httpOnly: true,
             })
             continue
           }
@@ -59,6 +59,16 @@ export const expressMiddlewareAdapter = (controller: ControllerFunction) => {
             maxAge: Number(maxAge),
           })
         }
+      }
+
+      if (response.redirect) {
+        return res.redirect(response.redirect)
+      }
+
+      if (response.error) {
+        return res.json({
+          error: response?.data,
+        })
       }
 
       return next()
@@ -87,7 +97,7 @@ export const expressRouteAdapter = (controller: ControllerFunction) => {
           if (value === null) {
             res.clearCookie(name, {
               path: '/',
-              httpOnly: true
+              httpOnly: true,
             })
             continue
           }
