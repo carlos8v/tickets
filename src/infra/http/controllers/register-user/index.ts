@@ -8,7 +8,6 @@ import { registerUserUseCaseFactory } from '@application/use-cases/register-user
 import { registerUserSchema } from '@application/use-cases/register-user/register-user-validator'
 
 import { registerUserControllerFactory } from './register-user'
-import { registerUserPageFactory } from './register-user-page'
 
 const registerUserUseCase = registerUserUseCaseFactory({
   userRepository: prismaUserRepositoryFactory(prisma),
@@ -20,5 +19,3 @@ export const registerUserController = registerUserControllerFactory({
   registerUserUseCase,
   registerUserValidator: registerUserSchema
 })
-
-export const registerUserPage = registerUserPageFactory()

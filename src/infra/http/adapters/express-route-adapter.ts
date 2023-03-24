@@ -1,9 +1,13 @@
 import type { IncomingHttpHeaders } from 'http'
 import type { NextFunction, Request, Response } from 'express'
 
+import path from 'path'
+
 type ControllerFunction = ReturnType<Controller<any>>
 
 import { kUnexpectedError } from '../errors'
+
+const indexPage = path.resolve(__dirname, '../../../../', 'public/index.html')
 
 function parseHeaders(headers: IncomingHttpHeaders) {
   return Object.entries(headers).reduce((headersMap, [name, value]) => {
@@ -64,7 +68,7 @@ export const expressMiddlewareAdapter = (controller: ControllerFunction) => {
       return next()
     } catch (error: Error | any) {
       console.error(error)
-      return res.render('error', {
+      return res.status(500).json({
         error: error?.message || kUnexpectedError,
       })
     }
@@ -107,10 +111,10 @@ export const expressRouteAdapter = (controller: ControllerFunction) => {
         return res.redirect(response.redirect)
       }
 
-      return res.render(response.view, response?.data || {})
+      return res.sendFile(indexPage)
     } catch (error: Error | any) {
       console.error(error)
-      return res.render('error', {
+      return res.status(500).json({
         error: error?.message || kUnexpectedError,
       })
     }

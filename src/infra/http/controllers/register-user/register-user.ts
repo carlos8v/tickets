@@ -6,7 +6,7 @@ import type { SessionService } from '@infra/http/interfaces/session-service'
 import { infraErrors, kInvalidBody } from '@infra/http/errors'
 import { applicationErrors } from '@application/errors'
 
-import { renderTemplate } from '@infra/http/helpers/http-helper'
+import { send } from '@infra/http/helpers/http-helper'
 
 type RegisterUserController = Controller<{
   sessionService: SessionService
@@ -22,8 +22,7 @@ export const registerUserControllerFactory: RegisterUserController = ({
   return async ({ body, cookies }) => {
     const userData = registerUserValidator.safeParse(body)
     if (!userData.success) {
-      return renderTemplate({
-        view: 'error',
+      return send({
         data: {
           error: infraErrors[kInvalidBody],
           goBack: 'register',
@@ -33,8 +32,7 @@ export const registerUserControllerFactory: RegisterUserController = ({
 
     const userSession = await registerUserUseCase(userData.data)
     if (userSession.isLeft()) {
-      return renderTemplate({
-        view: 'register',
+      return send({
         data: {
           ...userData.data,
           error: applicationErrors[userSession.value],
@@ -44,6 +42,6 @@ export const registerUserControllerFactory: RegisterUserController = ({
 
     cookies.set('session_id', sessionService.formatSession(userSession.value))
 
-    return renderTemplate({ redirect: '/', cookies })
+    return send({ redirect: '/', cookies })
   }
 }

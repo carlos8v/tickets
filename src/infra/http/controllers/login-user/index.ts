@@ -8,7 +8,6 @@ import { loginUserUseCaseFactory } from '@application/use-cases/login-user/login
 import { loginUserSchema } from '@application/use-cases/login-user/login-user-validator'
 
 import { loginUserControllerFactory } from './login-user'
-import { loginUserPageFactory } from './login-user-page'
 
 const loginUserUseCase = loginUserUseCaseFactory({
   userRepository: prismaUserRepositoryFactory(prisma),
@@ -21,4 +20,3 @@ export const loginUserController = loginUserControllerFactory({
   loginUserValidator: loginUserSchema
 })
 
-export const loginUserPage = loginUserPageFactory()

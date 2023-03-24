@@ -10,11 +10,10 @@ app.use(cookieParser(process.env.SESSION_SECRET!))
 app.set('view engine', 'ejs')
 app.set('views', 'views/pages')
 
-app.use('/', express.static(resolve(__dirname, '../../..', 'static')))
+app.use('/assets', express.static(resolve(__dirname, '../../..', 'public/assets')))
 
 app.use(express.urlencoded({
   extended: true
 }))
 
-app.get('/', (req, res) => res.sendFile(resolve(__dirname, '../../../', 'static/index.html')))
-// initializeRoutes(app)
+initializeRoutes(app)

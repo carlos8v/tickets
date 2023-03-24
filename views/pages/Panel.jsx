@@ -1,8 +1,10 @@
+import { For } from 'solid-js'
+
 import { Sidebar } from '../components/Sidebar'
 
-export const Panel = ({
-  tickets = []
-}) => {
+export const Panel = () => {
+  const tickets = []
+
   const statusClass = {
     OPENED: 'px-2 py-1 text-white rounded-full bg-blue-400',
     ARCHIVED: 'px-2 py-1 text-white rounded-full bg-orange-400',
@@ -17,8 +19,8 @@ export const Panel = ({
     UNRESOLVED: 'Não resolvido',
   }
 
-  function formatName(name) {
-    const name = name.split(' ').join('+')
+  function formatName(nameStr) {
+    const name = nameStr.split(' ').join('+')
     return `https://ui-avatars.com/api/?rounded=true&background=FF922D&color=fff&name=${name}`
   }
 
@@ -83,41 +85,7 @@ export const Panel = ({
                   </tr>
                 </thead>
                 <tbody>
-                  {tickets.map((ticket) => (
-                    <tr class="odd:bg-gray-100 hover:bg-gray-200">
-                      <td class="pl-4">
-                        <input
-                          id={ticket.id}
-                          type="checkbox"
-                          class="w-4 h-4"
-                        />
-                      </td>
-                      <td class="p-4">
-                        <div class="flex items-center">
-                          <img
-                            src={formatName(ticket.reporter.name)}
-                            alt={`${ticket.reporter.name} image`}
-                            width="36"
-                            height="36"
-                            class="mr-3"
-                          />
-                          <div class="flex flex-col">
-                            <p class="">{ticket.reporter.name}</p>
-                            <span class="text-zinc-400 text-sm">{ticket.reporter.email}</span>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="p-4">{ticket.subject}</td>
-                      <td class="p-4">{ticket.responsable.name}</td>
-                      <td class="p-4">
-                        <span class={statusClass[ticket.status]}>{statusLabel[ticket.status]}</span>
-                      </td>
-                      <td class="p-4">
-                        {new Date(ticket?.updatedAt || ticket.createdAt).toLocaleDateString()}
-                      </td>
-                    </tr>
-                  ))}
-                  {!tickets.length ? (
+                  <For each={tickets} fallback={(
                     <tr>
                       <td
                         colspan="6"
@@ -126,7 +94,42 @@ export const Panel = ({
                         Nenhum ticket disponível
                       </td>
                     </tr>
-                  ) : null}
+                  )}>
+                    {(ticket) => (
+                      <tr class="odd:bg-gray-100 hover:bg-gray-200">
+                        <td class="pl-4">
+                          <input
+                            id={ticket.id}
+                            type="checkbox"
+                            class="w-4 h-4"
+                          />
+                        </td>
+                        <td class="p-4">
+                          <div class="flex items-center">
+                            <img
+                              src={formatName(ticket.reporter.name)}
+                              alt={`${ticket.reporter.name} image`}
+                              width="36"
+                              height="36"
+                              class="mr-3"
+                            />
+                            <div class="flex flex-col">
+                              <p class="">{ticket.reporter.name}</p>
+                              <span class="text-zinc-400 text-sm">{ticket.reporter.email}</span>
+                            </div>
+                          </div>
+                        </td>
+                        <td class="p-4">{ticket.subject}</td>
+                        <td class="p-4">{ticket.responsable.name}</td>
+                        <td class="p-4">
+                          <span class={statusClass[ticket.status]}>{statusLabel[ticket.status]}</span>
+                        </td>
+                        <td class="p-4">
+                          {new Date(ticket?.updatedAt || ticket.createdAt).toLocaleDateString()}
+                        </td>
+                      </tr>
+                    )}
+                  </For>
                 </tbody>
               </table>
             </div>
