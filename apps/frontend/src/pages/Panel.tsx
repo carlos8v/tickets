@@ -2,21 +2,21 @@ import { Search } from 'react-feather'
 import { Sidebar } from '../components/Sidebar'
 
 export const Panel = () => {
-  const tickets = []
+  const tickets = [] as any[]
 
   const statusClass = {
     OPENED: 'px-2 py-1 text-white rounded-full bg-blue-400',
     ARCHIVED: 'px-2 py-1 text-white rounded-full bg-orange-400',
     RESOLVED: 'px-2 py-1 text-white rounded-full bg-green-400',
     UNRESOLVED: 'px-2 py-1 text-white rounded-full bg-red-400',
-  }
+  } as Record<string, string>
 
   const statusLabel = {
     OPENED: 'Aberto',
     ARCHIVED: 'Arquivado',
     RESOLVED: 'Resolvido',
     UNRESOLVED: 'Não resolvido',
-  }
+  } as Record<string, string>
 
   function formatName(nameStr: string) {
     const name = nameStr.split(' ').join('+')
@@ -120,7 +120,7 @@ export const Panel = () => {
                       <td className="p-4">{ticket.subject}</td>
                       <td className="p-4">{ticket.responsable.name}</td>
                       <td className="p-4">
-                        <span class={statusClass[ticket.status]}>
+                        <span className={statusClass[ticket.status]}>
                           {statusLabel[ticket.status]}
                         </span>
                       </td>

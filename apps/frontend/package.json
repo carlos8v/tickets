@@ -1,7 +1,7 @@
 {
-  "name": "@tickets/frontend",
-  "version": "0.0.0",
-  "description": "Frontend for tickets app",
+  "name": "frontend",
+  "version": "0.1.0",
+  "description": "Website for tickets app",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@trpc/client": "^10.18.0",
+    "backend": "^0.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-feather": "^2.0.10",

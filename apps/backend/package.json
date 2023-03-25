@@ -1,8 +1,8 @@
 {
-  "name": "@tickets/backend",
-  "version": "0.0.0",
-  "description": "Backend api for tickets app",
-  "main": "dist/infra/http/server.js",
+  "name": "backend",
+  "version": "0.1.0",
+  "description": "Api for tickets app",
+  "types": "dist/@types/index.d.ts",
   "scripts": {
     "start": "node dist/infra/http/server.js",
     "dev": "tsx watch ./src/infra/http/server.ts",

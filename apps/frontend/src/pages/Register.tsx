@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-
 import { Info } from 'react-feather'
+
+import { trpc } from '../services/trpc'
 
 export const Register = () => {
   const [error, setError] = useState('')
@@ -10,34 +11,24 @@ export const Register = () => {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
 
-  const naviate = useNavigate()
+  const navigate = useNavigate()
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    fetch('/register', {
-      method: 'POST',
-      headers: {
-        'Content-type': 'application/json',
-      },
-      body: JSON.stringify({
+
+    try {
+      await trpc.registerUser.mutate({
         name,
         email,
         password,
         confirmPassword
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.error) {
-          setError(data.error)
-          return
-        }
+      })
 
-        naviate('/')
-      })
-      .catch((e) => {
-        console.error(e)
-      })
+      navigate('/')
+    } catch (error: Error | any) {
+      setError(error?.message)
+      console.error(error)
+    }
   }
 
   return (
