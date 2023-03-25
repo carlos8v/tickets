@@ -1,18 +1,21 @@
 import { ReactNode, useEffect, useState, createContext } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
-import { UserModel } from 'backend'
+import { UserModel } from '@domain/user'
 import { trpc } from '../services/trpc'
 
 const UserContext = createContext<{ user?: Omit<UserModel, 'password'> }>({})
 
+const ignoreRoutes = ['/register', '/login']
+
 export const AuthContext = ({ children }: { children: ReactNode }) => {
-  const [loading, setLoading] = useState(true)
+  const [isFetchingUser, setIsFetchingUser] = useState(true)
   const [user, setUser] = useState<Omit<UserModel, 'password'> | undefined>(undefined)
 
+  const location = useLocation()
   const navigate = useNavigate()
 
-  async function handleMe() {
+  async function refreshUserSession() {
     try {
       const userData = await trpc.me.query()
       if (!userData?.id) return
@@ -21,19 +24,22 @@ export const AuthContext = ({ children }: { children: ReactNode }) => {
     } catch (error) {
       navigate('/login')
     } finally {
-      setLoading(false)
+      setIsFetchingUser(false)
     }
   }
 
   useEffect(() => {
-    if (loading === true && !user?.id) {
-      handleMe()
+    if (!user?.id && !ignoreRoutes.includes(location.pathname)) {
+      refreshUserSession()
+      return
     }
-  }, [loading, user])
+
+    setIsFetchingUser(false)
+  }, [user])
 
   return (
     <UserContext.Provider value={{ user }}>
-      {!loading ? children : null}
+      {!isFetchingUser ? children : null}
     </UserContext.Provider>
   )
 }

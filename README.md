@@ -48,21 +48,24 @@ docker-compose up -d db
 
 ## Rodar aplicação localmente
 
-Passo a passo:
 1. Instalar as dependências:
 ```bash
+# apps/backend
+npm install
+
+# apps/frontend
 npm install
 ```
 2. Gerar os esquemas do banco de dado
 ```bash
+# apps/backend
 npm run schema:generate
 ```
-3. Buildar a aplicação para se ter a tipagem correta das rotas
+3. Iniciar individualmente os servidores backend e frontend
 ```bash
-npm run build
-```
-4. Iniciar individualmente os servidores backend e frontend
-```bash
-npm run dev:server
-npm run dev:front
+# apps/backend
+npm run dev
+
+# apps/frontend
+npm run dev
 ```
