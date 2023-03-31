@@ -9,7 +9,7 @@ RUN npm ci --silent
 
 COPY ./src/ ./src
 COPY tsconfig*.json ./
-RUN npm run db:generate
+RUN npm run schema:generate
 RUN npm run build
 RUN npm prune --production
 

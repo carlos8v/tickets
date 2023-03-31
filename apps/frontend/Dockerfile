@@ -6,7 +6,7 @@ RUN npm ci --silent
 
 COPY src/ ./src
 COPY public/ ./public
-COPY index.html vite.config.js ./
+COPY index.html vite.config.ts tsconfig*.json *.config.cjs ./
 RUN npm run build
 
 FROM nginx:1.23.2
