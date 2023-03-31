@@ -2,8 +2,30 @@ version: '3'
 services:
   db:
     image: mysql:8.0.21
-    container_name: tickets_db
+    container_name: tickets-db
     ports:
       - 3306:3306
     environment:
       MYSQL_ROOT_PASSWORD: root
+  api:
+    build:
+      context: ./apps/backend
+    image: tickets/api
+    container_name: tickets-api
+    environment:
+      PORT: 3000
+      SESSION_SECRET: "keyboard cat"
+      DATABASE_URL: "mysql://root:root@db:3306/tickets"
+    depends_on:
+      - db
+  front:
+    build:
+      context: './apps/frontend'
+    image: tickets/web
+    container_name: tickets-web
+    ports:
+      - 8080:80
+    environment:
+      API_URL: http://api:3000
+    depends_on:
+      - api
