@@ -21,19 +21,24 @@ export const authenticateUser = middleware(async ({ ctx, next }) => {
     throw Unauthorized(infraErrors[kInvalidAuthRequest])
   }
 
-  const payload = await authenticateUseUseCase(sessionId)
-  if (payload.isLeft()) {
+  const session = await authenticateUseUseCase(sessionId)
+  if (session.isLeft()) {
     ctx.res.clearCookie('session_id', sessionService.formatSessionOptions())
     throw Unauthorized(infraErrors[kInvalidAuthRequest])
   }
 
-  if (sessionId !== payload.value.session.id) {
+  if (sessionId !== session.value.id) {
     ctx.res.cookie(
       'session_id',
-      payload.value.session.id,
-      sessionService.formatSessionOptions(payload.value.session)
+      session.value.id,
+      sessionService.formatSessionOptions(session.value)
     )
   }
 
-  return next({ ctx })
+  return next({
+    ctx: {
+      ...ctx,
+      userId: session.value.user.id
+    }
+  })
 })

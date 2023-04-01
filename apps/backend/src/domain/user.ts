@@ -4,17 +4,19 @@ import type { OptionalProps } from './utils/optional-props'
 
 export type UserModel = {
   id: string
+  admin: boolean
   name: string
   password: string
   email: string
   createdAt: Date | string
 }
 
-type OptionalCreateProps = 'id' | 'createdAt'
+type OptionalCreateProps = 'id' | 'admin' | 'createdAt'
 export type CreateUserProps = OptionalProps<UserModel, OptionalCreateProps>
 
 export const makeUser = (userData: CreateUserProps): UserModel => ({
   id: userData?.id || randomUUID(),
+  admin: userData?.admin || false,
   name: userData.name,
   email: userData.email,
   password: userData.password,

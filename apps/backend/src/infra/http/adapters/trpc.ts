@@ -5,6 +5,7 @@ import type { TRPC_ERROR_CODE_KEY } from '@trpc/server/rpc'
 import { initTRPC, TRPCError } from '@trpc/server'
 
 export const createContext = ({ req, res }: CreateExpressContextOptions) => ({
+  userId: null as string | null,
   req,
   res,
 })

@@ -1,9 +1,11 @@
 import { randomUUID } from 'crypto'
 import type { OptionalProps } from './utils/optional-props'
 
+import { UserModel } from './user'
+
 export type SessionModel = {
   id: string
-  userId: string
+  user: OptionalProps<UserModel, 'password'>
   createdAt: Date | string
   expiresAt: Date | string
 }
@@ -22,7 +24,7 @@ export const makeSession = (sessionData: CreateSessionProps): SessionModel => {
 
   return {
     id: sessionData?.id || randomUUID(),
-    userId: sessionData.userId,
+    user: sessionData.user,
     createdAt,
     expiresAt
   }

@@ -8,7 +8,6 @@ import type { SessionRepository } from '@application/interfaces/session-reposito
 import type { UserRepository } from '@application/interfaces/user-repository'
 
 import { kNotAuthorizedUser, kInvalidUser } from '@application/errors'
-import { UserModel } from '@domain/user'
 
 type AuthenticateUseUseCaseFactory = UseCase<
   {
@@ -19,35 +18,31 @@ type AuthenticateUseUseCaseFactory = UseCase<
   Promise<
     Either<
       typeof kNotAuthorizedUser | typeof kInvalidUser,
-      { session: SessionModel, user: Omit<UserModel, 'password'> }
+      SessionModel
     >
   >
 >
-export type AuthenticateUseUseCase = ReturnType<AuthenticateUseUseCaseFactory>
 
 export const authenticateUserUseCaseFactory: AuthenticateUseUseCaseFactory = ({
   sessionRepository,
-  userRepository,
 }) => {
   return async (sessionId) => {
     const session = await sessionRepository.findBySessionId(sessionId)
     if (!session?.id) return left(kNotAuthorizedUser)
+    if (!session.user?.id) return left(kInvalidUser)
 
-    const user = await userRepository.findById(session.userId)
-    if (!user?.id) return left(kInvalidUser)
-
-    const { password, ...safeUser } = user
+    const { password, ...safeUser } = session.user
 
     const oneHourInMilliseconds = 1000 * 60 * 60
     const sessionRemaingTimeInMilliseconds =
       new Date(session.expiresAt).getTime() - new Date().getTime()
 
     if (sessionRemaingTimeInMilliseconds <= oneHourInMilliseconds) {
-      const newSession = makeSession({ userId: session.userId })
+      const newSession = makeSession({ user: session.user })
       await sessionRepository.save(newSession)
-      return right({ session: newSession, user: safeUser })
+      return right({ ...newSession, user: safeUser })
     }
 
-    return right({ session, user: safeUser })
+    return right({ ...session, user: safeUser })
   }
 }

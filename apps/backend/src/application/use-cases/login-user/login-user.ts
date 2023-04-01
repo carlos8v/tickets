@@ -23,11 +23,10 @@ type LoginUserUseCaseFactory = UseCase<
   Promise<
     Either<
       typeof kInvalidUser | typeof kInvalidUserCredentials,
-      { session: SessionModel, user: Omit<UserModel, 'password'> }
+      SessionModel
     >
   >
 >
-export type LoginUserUseCase = ReturnType<LoginUserUseCaseFactory>
 
 export const loginUserUseCaseFactory: LoginUserUseCaseFactory = ({
   userRepository,
@@ -40,11 +39,11 @@ export const loginUserUseCaseFactory: LoginUserUseCaseFactory = ({
     const correctPass = await comparePassword(password, user.password)
     if (!correctPass) return left(kInvalidUserCredentials)
 
-    const session = makeSession({ userId: user.id })
+    const session = makeSession({ user })
     await sessionRepository.save(session)
 
     const { password: _, ...safeUser } = user
 
-    return right({ session, user: safeUser })
+    return right({ ...session, user: safeUser })
   }
 }

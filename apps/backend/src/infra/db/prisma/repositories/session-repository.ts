@@ -3,32 +3,37 @@ import type { SessionRepository } from '@application/interfaces/session-reposito
 
 import { loadSessionEntity } from '../utils/load-entity'
 
-export const prismaSessionRepositoryFactory: (prisma: PrismaClient) => SessionRepository = (prisma) => ({
+export const prismaSessionRepositoryFactory: (
+  prisma: PrismaClient
+) => SessionRepository = (prisma) => ({
   save: async (sessionData) => {
     await prisma.session.upsert({
       where: {
-        id: sessionData.id
+        id: sessionData.id,
       },
       create: {
         id: sessionData.id,
-        userId: sessionData.userId,
+        userId: sessionData.user.id,
         createdAt: sessionData.createdAt,
-        expiresAt: sessionData.expiresAt
+        expiresAt: sessionData.expiresAt,
       },
-      update: {
-        userId: sessionData.userId,
-        createdAt: sessionData.createdAt,
-        expiresAt: sessionData.expiresAt
-      }
+      update: { expiresAt: sessionData.expiresAt },
     })
   },
   findBySessionId: async (sessionId) => {
     const session = await prisma.session.findFirst({
-      where: { id: sessionId }
+      where: { id: sessionId },
+      include: {
+        user: {
+          include: {
+            admin: true
+          }
+        }
+      }
     })
 
     if (!session?.id) return null
 
-    return loadSessionEntity(session)
-  }
+    return loadSessionEntity(session, session.user, !!session.user.admin?.id)
+  },
 })

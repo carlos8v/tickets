@@ -8,7 +8,8 @@
     "prebuild": "rimraf dist/",
     "build": "tsc -p tsconfig-build.json",
     "postbuild": "tscpaths -p tsconfig-build.json -s ./src -o ./dist",
-    "schema:generate": "prisma generate"
+    "schema:generate": "prisma generate",
+    "db:migrate": "prisma migrate deploy"
   },
   "author": "Carlos Souza <carlos.pessoal@hotmail.com",
   "license": "MIT",

@@ -29,11 +29,10 @@ type RegisterUserUseCaseFactory = UseCase<
       | typeof kUserAlreadyExists
       | typeof kInvalidUserCredentials
       | typeof kMismatchingUserPass,
-      { session: SessionModel, user: Omit<UserModel, 'password'> }
+      SessionModel
     >
   >
 >
-export type RegisterUserUseCase = ReturnType<RegisterUserUseCaseFactory>
 
 export const registerUserUseCaseFactory: RegisterUserUseCaseFactory = ({
   userRepository,
@@ -55,11 +54,11 @@ export const registerUserUseCaseFactory: RegisterUserUseCaseFactory = ({
     })
     await userRepository.save(user)
 
-    const session = makeSession({ userId: user.id })
+    const session = makeSession({ user })
     await sessionRepository.save(session)
 
     const { password, ...safeUser } = user
 
-    return right({ session, user: safeUser })
+    return right({ ...session, user: safeUser })
   }
 }

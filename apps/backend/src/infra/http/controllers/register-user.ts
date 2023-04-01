@@ -18,16 +18,16 @@ const registerUserUseCase = registerUserUseCaseFactory({
 export const registerUser = publicProcedure
   .input(registerUserSchema)
   .mutation(async ({ input, ctx }) => {
-    const data = await registerUserUseCase(input)
-    if (data.isLeft()) {
-      throw BadRequest(applicationErrors[data.value])
+    const session = await registerUserUseCase(input)
+    if (session.isLeft()) {
+      throw BadRequest(applicationErrors[session.value])
     }
 
     ctx.res.cookie(
       'session_id',
-      data.value.session.id,
-      sessionService.formatSessionOptions(data.value.session)
+      session.value.id,
+      sessionService.formatSessionOptions(session.value)
     )
 
-    return data.value.user
+    return session.value.user
   })

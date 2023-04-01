@@ -20,16 +20,16 @@ export const loginUser = publicProcedure
   .input(loginUserSchema)
   .mutation(async ({ input, ctx }) => {
     const { email, password } = input
-    const payload = await loginUserUseCase({ email, password })
-    if (payload.isLeft()) {
-      throw BadRequest(applicationErrors[payload.value])
+    const session = await loginUserUseCase({ email, password })
+    if (session.isLeft()) {
+      throw BadRequest(applicationErrors[session.value])
     }
 
     ctx.res.cookie(
       'session_id',
-      payload.value.session.id,
-      sessionService.formatSessionOptions(payload.value.session)
+      session.value.id,
+      sessionService.formatSessionOptions(session.value)
     )
 
-    return payload.value.user
+    return session.value.user
   })
