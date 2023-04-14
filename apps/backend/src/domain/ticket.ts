@@ -8,7 +8,7 @@ export type TicketStatus = 'OPENED' | 'ARCHIVED' | 'RESOLVED' | 'UNRESOLVED'
 export type TicketModel = {
   id: string
   subject: string
-  reportedBy?: OptionalProps<UserModel, 'password'>
+  reportedBy: OptionalProps<UserModel, 'password'>
   responsable?: OptionalProps<UserModel, 'password'>
   status: TicketStatus
   createdAt: Date | string

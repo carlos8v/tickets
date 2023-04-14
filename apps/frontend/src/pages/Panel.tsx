@@ -1,8 +1,21 @@
+import { useState, useEffect } from 'react'
+
 import { Search } from 'react-feather'
+
+import type { TicketModel, TicketStatus } from '@domain/ticket'
+
 import { Sidebar } from '../components/Sidebar'
+import { trpc } from '../services/trpc'
 
 export const Panel = () => {
-  const tickets = [] as any[]
+  const [status, setStatus] = useState<TicketStatus | 'ALL'>('ALL')
+  const [name, setName] = useState('')
+
+  const [tickets, setTickets] = useState<TicketModel[]>([])
+
+  useEffect(() => {
+    trpc.findAllTickets.query({ status, name }).then((res) => setTickets(res))
+  }, [status, name])
 
   const statusClass = {
     OPENED: 'px-2 py-1 text-white rounded-full bg-blue-400',
@@ -27,7 +40,7 @@ export const Panel = () => {
     <div className="w-full h-screen w-full flex">
       <Sidebar />
       <main className="h-full w-full flex flex-col sm:flex-row overflow-auto">
-        <section className="w-full sm:max-w-sm sm:h-full bg-gray-100 border-b sm:border-r border-zinc-300">
+        <section className="w-full sm:max-w-[16rem] sm:h-full bg-gray-100 border-b sm:border-r border-zinc-300">
           <div className="h-16 border-b border-zinc-300 flex items-center px-4">
             <h5 className="text-lg">Painel</h5>
           </div>
@@ -36,26 +49,40 @@ export const Panel = () => {
               htmlFor="search-tickets"
               className="w-full p-2 bg-white flex border border-gray-300 items-center"
             >
-              <Search
-                className="mr-2 text-gray-400"
-                width={22}
-                height={22}
-              />
+              <Search className="mr-2 text-gray-400" width={22} height={22} />
               <input
                 id="search-tickets"
                 type="text"
                 className="w-full outline-0"
                 placeholder="Procurar tickets"
+                value={name}
+                onChange={({ target }) => setName(target.value)}
               />
             </label>
           </div>
           <div className="p-4">
             <ul className="ml-4 flex flex-col gap-3">
-              <li className="font-medium cursor-pointer">Todos</li>
-              <li className="text-zinc-600 cursor-pointer">Abertos</li>
-              <li className="text-zinc-600 cursor-pointer">Resolvidos</li>
-              <li className="text-zinc-600 cursor-pointer">Não resolvidos</li>
-              <li className="text-zinc-600 cursor-pointer">Arquivados</li>
+              <li className={`${status === 'ALL' ? 'font-medium' : 'text-zinc-600'} cursor-pointer`}>
+                <button onClick={() => setStatus('ALL')}>Todos</button>
+              </li>
+              <li className={`${status === 'OPENED' ? 'font-medium' : 'text-zinc-600'} cursor-pointer`}>
+                <button onClick={() => setStatus('OPENED')}>Abertos</button>
+              </li>
+              <li className={`${status === 'RESOLVED' ? 'font-medium' : 'text-zinc-600'} cursor-pointer`}>
+                <button onClick={() => setStatus('RESOLVED')}>
+                  Resolvidos
+                </button>
+              </li>
+              <li className={`${status === 'UNRESOLVED' ? 'font-medium' : 'text-zinc-600'} cursor-pointer`}>
+                <button onClick={() => setStatus('UNRESOLVED')}>
+                  Não resolvidos
+                </button>
+              </li>
+              <li className={`${status === 'ARCHIVED' ? 'font-medium' : 'text-zinc-600'} cursor-pointer`}>
+                <button onClick={() => setStatus('ARCHIVED')}>
+                  Arquivados
+                </button>
+              </li>
             </ul>
           </div>
         </section>
@@ -92,7 +119,10 @@ export const Panel = () => {
                     </tr>
                   ) : null}
                   {tickets.map((ticket) => (
-                    <tr className="odd:bg-gray-100 hover:bg-gray-200">
+                    <tr
+                      className="odd:bg-gray-100 hover:bg-gray-200"
+                      key={ticket.id}
+                    >
                       <td className="pl-4">
                         <input
                           id={ticket.id}
@@ -103,22 +133,24 @@ export const Panel = () => {
                       <td className="p-4">
                         <div className="flex items-center">
                           <img
-                            src={formatName(ticket.reporter.name)}
-                            alt={`${ticket.reporter.name} image`}
+                            src={formatName(ticket.reportedBy.name)}
+                            alt={`${ticket.reportedBy.name} image`}
                             width="36"
                             height="36"
                             className="mr-3"
                           />
                           <div className="flex flex-col">
-                            <p className="">{ticket.reporter.name}</p>
+                            <p className="">{ticket.reportedBy.email}</p>
                             <span className="text-zinc-400 text-sm">
-                              {ticket.reporter.email}
+                              {ticket.reportedBy.email}
                             </span>
                           </div>
                         </div>
                       </td>
                       <td className="p-4">{ticket.subject}</td>
-                      <td className="p-4">{ticket.responsable.name}</td>
+                      <td className="p-4">
+                        {ticket.responsable?.name || 'Não atribuido'}
+                      </td>
                       <td className="p-4">
                         <span className={statusClass[ticket.status]}>
                           {statusLabel[ticket.status]}
