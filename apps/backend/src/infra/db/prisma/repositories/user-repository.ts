@@ -59,6 +59,27 @@ export const prismaUserRepositoryFactory: (
 
     return loadUserEntity(user)
   },
+  findManyBy: async ({ name = '', email = '' }) => {
+    const users = await prisma.user.findMany({
+      where: {
+        ...(name !== ''
+          ? {
+              name: { contains: name },
+            }
+          : {}),
+        ...(email !== ''
+          ? {
+              email: { contains: email },
+            }
+          : {}),
+      },
+      include: {
+        admin: true,
+      },
+    })
+
+    return users.map(({ admin, ...user }) => loadUserEntity(user, !!admin?.id))
+  },
   setAdmin: async (userId) => {
     const user = await prisma.user.findFirst({
       where: { id: userId },
