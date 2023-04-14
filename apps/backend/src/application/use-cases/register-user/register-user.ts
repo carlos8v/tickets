@@ -43,7 +43,9 @@ export const registerUserUseCaseFactory: RegisterUserUseCaseFactory = ({
       return left(kMismatchingUserPass)
 
     const userAlreadyExists = await userRepository.findByEmail(userData.email)
-    if (userAlreadyExists?.id) return left(kUserAlreadyExists)
+    if (userAlreadyExists?.id && userAlreadyExists?.deletedAt === undefined) {
+      return left(kUserAlreadyExists)
+    }
 
     const cryptPass = await hashPass(userData.password)
 

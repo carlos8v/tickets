@@ -9,9 +9,10 @@ export type UserModel = {
   password: string
   email: string
   createdAt: Date | string
+  deletedAt?: Date | string
 }
 
-type OptionalCreateProps = 'id' | 'admin' | 'createdAt'
+type OptionalCreateProps = 'id' | 'admin' | 'createdAt' | 'deletedAt'
 export type CreateUserProps = OptionalProps<UserModel, OptionalCreateProps>
 
 export const makeUser = (userData: CreateUserProps): UserModel => ({
@@ -21,6 +22,7 @@ export const makeUser = (userData: CreateUserProps): UserModel => ({
   email: userData.email,
   password: userData.password,
   createdAt: userData?.createdAt || new Date(),
+  deletedAt: userData?.deletedAt || undefined
 })
 
 const saltRound = 10

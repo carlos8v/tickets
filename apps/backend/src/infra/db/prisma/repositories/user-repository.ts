@@ -72,6 +72,7 @@ export const prismaUserRepositoryFactory: (
               email: { contains: email },
             }
           : {}),
+        deletedAt: null
       },
       include: {
         admin: true,

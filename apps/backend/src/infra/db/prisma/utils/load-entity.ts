@@ -24,6 +24,7 @@ export const loadUserEntity = (
     name: user.name,
     password: user.password,
     createdAt: new Date(user.createdAt),
+    deletedAt: user.deletedAt ? new Date(user.deletedAt) : undefined
   })
 
 export const loadSessionEntity = (
