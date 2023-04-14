@@ -38,6 +38,7 @@ export const authenticateUser = middleware(async ({ ctx, next }) => {
   return next({
     ctx: {
       ...ctx,
+      sessionId: session.value.id,
       userId: session.value.user.id
     }
   })

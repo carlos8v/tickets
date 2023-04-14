@@ -4,7 +4,6 @@ import { left, right } from '@domain/utils/either'
 import type { SessionModel } from '@domain/session'
 import { makeSession } from '@domain/session'
 
-import type { UserModel } from '@domain/user'
 import { comparePassword } from '@domain/user'
 
 import type { UserRepository } from '@application/interfaces/user-repository'

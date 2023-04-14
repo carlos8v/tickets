@@ -43,7 +43,7 @@ export const prismaUserRepositoryFactory: (
   },
   findByEmail: async (email) => {
     const user = await prisma.user.findFirst({
-      where: { email },
+      where: { email, deletedAt: null },
     })
 
     if (!user?.id) return null

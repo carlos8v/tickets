@@ -20,6 +20,13 @@ export const prismaSessionRepositoryFactory: (
       update: { expiresAt: sessionData.expiresAt },
     })
   },
+  destroySession: async (sessionId) => {
+    await prisma.session.delete({
+      where: {
+        id: sessionId
+      }
+    })
+  },
   findBySessionId: async (sessionId) => {
     const session = await prisma.session.findFirst({
       where: { id: sessionId },

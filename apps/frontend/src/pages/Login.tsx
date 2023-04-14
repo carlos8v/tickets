@@ -3,8 +3,11 @@ import { useNavigate } from 'react-router-dom'
 import { Info } from 'react-feather'
 
 import { trpc } from '../services/trpc'
+import { useUserContext } from '../context/AuthContext'
 
 export const Login = () => {
+  const { updateUser } = useUserContext()
+
   const [error, setError] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -14,11 +17,12 @@ export const Login = () => {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     try {
-      await trpc.loginUser.mutate({
+      const user = await trpc.loginUser.mutate({
         email,
         password,
       })
 
+      updateUser(user)
       navigate('/')
     } catch (error: Error | any) {
       setError(error?.message || 'Erro inesperado ocorreu')
