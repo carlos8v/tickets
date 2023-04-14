@@ -5,12 +5,17 @@ import { AuthContext } from './context/AuthContext'
 
 import { Login } from './pages/Login'
 import { Register } from './pages/Register'
-import { Panel } from './pages/Panel'
+import { TicketsPanel } from './pages/TicketsPanel'
+import { UsersPanel } from './pages/UsersPanel'
 
 export const routes = [
   {
     path: '/',
-    element: <ContextWrapper element={<Panel />} />,
+    element: <ContextWrapper element={<TicketsPanel />} />,
+  },
+  {
+    path: '/users',
+    element: <ContextWrapper element={<UsersPanel />} />,
   },
   {
     path: '/login',

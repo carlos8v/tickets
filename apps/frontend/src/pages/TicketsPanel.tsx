@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-
 import { Search } from 'react-feather'
 
 import type { TicketModel, TicketStatus } from '@domain/ticket'
@@ -7,7 +6,9 @@ import type { TicketModel, TicketStatus } from '@domain/ticket'
 import { Sidebar } from '../components/Sidebar'
 import { trpc } from '../services/trpc'
 
-export const Panel = () => {
+import { statusClass, statusLabel, getUserImage } from '../utils'
+
+export const TicketsPanel = () => {
   const [status, setStatus] = useState<TicketStatus | 'ALL'>('ALL')
   const [name, setName] = useState('')
 
@@ -16,25 +17,6 @@ export const Panel = () => {
   useEffect(() => {
     trpc.findAllTickets.query({ status, name }).then((res) => setTickets(res))
   }, [status, name])
-
-  const statusClass = {
-    OPENED: 'px-2 py-1 text-white rounded-full bg-blue-400',
-    ARCHIVED: 'px-2 py-1 text-white rounded-full bg-orange-400',
-    RESOLVED: 'px-2 py-1 text-white rounded-full bg-green-400',
-    UNRESOLVED: 'px-2 py-1 text-white rounded-full bg-red-400',
-  } as Record<string, string>
-
-  const statusLabel = {
-    OPENED: 'Aberto',
-    ARCHIVED: 'Arquivado',
-    RESOLVED: 'Resolvido',
-    UNRESOLVED: 'Não resolvido',
-  } as Record<string, string>
-
-  function formatName(nameStr: string) {
-    const name = nameStr.split(' ').join('+')
-    return `https://ui-avatars.com/api/?rounded=true&background=FF922D&color=fff&name=${name}`
-  }
 
   return (
     <div className="w-full h-screen w-full flex">
@@ -133,7 +115,7 @@ export const Panel = () => {
                       <td className="p-4">
                         <div className="flex items-center">
                           <img
-                            src={formatName(ticket.reportedBy.name)}
+                            src={getUserImage(ticket.reportedBy.name)}
                             alt={`${ticket.reportedBy.name} image`}
                             width="36"
                             height="36"
