@@ -3,26 +3,43 @@ import { Search } from 'react-feather'
 
 import type { UserModel } from '@domain/user'
 
-import { Sidebar } from '../components/Sidebar'
 import { trpc } from '../services/trpc'
+
+import { Sidebar } from '../components/Sidebar'
+import { CreateUserModal } from '../components/CreateUserModal'
 
 import { usersClass, usersLabel } from '../utils'
 
 export const UsersPanel = () => {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
-  
+
   const [users, setUsers] = useState<UserModel[]>([])
 
-  useEffect(() => {
+  const [isModalActive, setIsModalActive] = useState(false)
+
+  function fetchUsers() {
     trpc.findAllUsers.query({ name, email }).then((res) => setUsers(res))
+  }
+
+  useEffect(() => {
+    fetchUsers()
   }, [name, email])
+
+  function toggleModal() {
+    setIsModalActive((prev) => !prev)
+  }
+
+  function handleUserCreation() {
+    setIsModalActive(false)
+    fetchUsers()
+  }
 
   return (
     <div className="w-full h-screen w-full flex">
       <Sidebar />
       <main className="h-full w-full flex flex-col sm:flex-row overflow-auto">
-        <section className="w-full sm:max-w-[16rem] sm:h-full bg-gray-100 border-b sm:border-r border-zinc-300">
+        <section className="w-full sm:max-w-[18rem] sm:h-full bg-gray-100 border-b sm:border-r border-zinc-300">
           <div className="h-16 border-b border-zinc-300 flex items-center px-4">
             <h5 className="text-lg">Usuários</h5>
           </div>
@@ -42,20 +59,16 @@ export const UsersPanel = () => {
               />
             </label>
           </div>
-          {/* <div className="p-4">
-            <ul className="ml-4 flex flex-col gap-3">
-              <li className={`${status === 'ALL' ? 'font-medium' : 'text-zinc-600'} cursor-pointer`}>
-                <button onClick={() => setStatus('ALL')}>Todos</button>
-              </li>
-              <li className={`${status === 'OPENED' ? 'font-medium' : 'text-zinc-600'} cursor-pointer`}>
-                <button onClick={() => setStatus('OPENED')}>Abertos</button>
-              </li>
-            </ul>
-          </div> */}
         </section>
         <section className="flex-1 overflow-auto">
-          <div className="h-16 border-b border-zinc-300 flex items-center px-4">
+          <div className="h-16 border-b border-zinc-300 flex items-center justify-between px-4">
             <h5 className="text-lg">Todos os usuários</h5>
+            <button
+              className="px-4 py-1 border border-zinc-300"
+              onClick={toggleModal}
+            >
+              Cadastrar
+            </button>
           </div>
           <div className="overflow-auto">
             <div className="min-w-[1024px] w-full">
@@ -99,7 +112,9 @@ export const UsersPanel = () => {
                       <td className="p-4">{user.name}</td>
                       <td className="p-4">{user.email}</td>
                       <td className="p-4">
-                        <span className={usersClass[user.admin ? 'ADMIN' : 'USER']}>
+                        <span
+                          className={usersClass[user.admin ? 'ADMIN' : 'USER']}
+                        >
                           {usersLabel[user.admin ? 'ADMIN' : 'USER']}
                         </span>
                       </td>
@@ -112,6 +127,12 @@ export const UsersPanel = () => {
               </table>
             </div>
           </div>
+          {isModalActive ? (
+            <CreateUserModal
+              handleClose={toggleModal}
+              onSubmit={handleUserCreation}
+            />
+          ) : null}
         </section>
       </main>
     </div>

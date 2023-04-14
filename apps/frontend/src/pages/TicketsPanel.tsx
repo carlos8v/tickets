@@ -22,7 +22,7 @@ export const TicketsPanel = () => {
     <div className="w-full h-screen w-full flex">
       <Sidebar />
       <main className="h-full w-full flex flex-col sm:flex-row overflow-auto">
-        <section className="w-full sm:max-w-[16rem] sm:h-full bg-gray-100 border-b sm:border-r border-zinc-300">
+        <section className="w-full sm:max-w-[18rem] sm:h-full bg-gray-100 border-b sm:border-r border-zinc-300">
           <div className="h-16 border-b border-zinc-300 flex items-center px-4">
             <h5 className="text-lg">Painel</h5>
           </div>
