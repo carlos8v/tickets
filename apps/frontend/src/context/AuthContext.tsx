@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { UserModel } from '@domain/user'
 import { trpc } from '../services/trpc'
 
-const UserContext = createContext<{ user?: Omit<UserModel, 'password'> }>({})
+export const UserContext = createContext<{ user?: Omit<UserModel, 'password'> }>({})
 
 const ignoreRoutes = ['/register', '/login']
 
